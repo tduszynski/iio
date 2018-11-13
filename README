@@ -1,0 +1,31 @@
+
+
+1. Get some reasonable toolchain.
+
+$ wget -c https://releases.linaro.org/components/toolchain/binaries/7.3-2018.05/arm-linux-gnueabihf/gcc-linaro-7.3.1-2018.05-x86_64_arm-linux-gnueabihf.tar.xz
+$ tar xf gcc-linaro-7.3.1-2018.05-x86_64_arm-linux-gnueabihf.tar.xz
+
+2. Get kernel sources.
+
+$ git clone -b v4.19 --depth 1 git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+
+3. Copy config from this repository to linux kernel directory.
+
+$ cp iio/config linux/.config
+
+4. Prepare kernel, DT & tools.
+
+$ cd linux
+$ export ARCH=arm
+$ export CROSS_COMPILE=~/gcc-linaro-7.3.1-2018.05-x86_64_arm-linux-gnueabihf/bin/arm-linux-gnueabihf-
+$ make oldconfig
+$ make -j4
+$ cd tools/iio
+$ make
+
+5. Compile debugfs_overlay module
+
+$ cd ~
+$ git clone https://github.com/tduszynski/debugfs_overlay.git
+$ cd debugfs_overlay
+$ make -C ../linux M=$PWD
